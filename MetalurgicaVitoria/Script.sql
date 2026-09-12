@@ -107,5 +107,27 @@ SELECT * FROM Fornecedores
 
 
 UPDATE Produtos
-SET IdFornecedor = 1
-WHERE NomeProduto = 'Cabo Elétrico';
+SET IdFornecedor = 2
+WHERE NomeProduto = 'Martelo de Unha';
+
+SELECT * FROM Produtos;
+
+
+SELECT * FROM Fornecedores
+WHERE Cidade = 'São Paulo';
+
+
+CREATE TABLE Rascunho (
+	Teste VARCHAR(50),
+);
+
+INSERT INTO Rascunho
+(Teste)
+VALUES
+('Entendendo Truncatee'),
+('qualquer coisa'),
+('apenas um teste');
+
+SELECT * FROM Rascunho
+
+TRUNCATE TABLE Rascunho
