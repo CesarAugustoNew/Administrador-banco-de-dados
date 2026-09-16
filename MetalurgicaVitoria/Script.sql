@@ -5,17 +5,17 @@ CREATE DATABASE MetalurgicaVitoria;
 
 USE MetalurgicaVitoria;
 
--- Criação das tebelas de banco de dados
+-- Criação das tabelas de banco de dados
 -- NomeTabela -> Atributos -> Campos -> Colunas -> Tipagem de dados
+
 CREATE TABLE Produtos (
 	IdProduto INT IDENTITY(1, 1) PRIMARY KEY,
 	NomeProduto VARCHAR(100) NOT NULL,
 	CategoriaProduto VARCHAR(100),
 	QtdProduto INT NOT NULL,
 	-- DECIMAL(10, 2) -> 1000000000,00
-	PrecoUniProduto FLOAT NOT NULL, -- 19.5,  52.2
+	PrecoUniProduto FLOAT NOT NULL, -- 19.5, 52.2
 	DataCadastroProduto DATETIME DEFAULT GETDATE()
-
 );
 
 -- DML -> DATA MANIPULATION LANGUAGE
@@ -46,42 +46,51 @@ VALUES
 
 -- DQL -> DATA QUERY LANGUAGE
 -- SELECIONE TUDO DA TABELA Produtos
+
 SELECT * FROM Produtos;
 
 
 -- DML -> DATA MANIPULATION LANGUAGE
+
 UPDATE dbo.Produtos
 SET QtdProduto = 100
-WHERE NomeProduto = 'Torneira Plástica'
+WHERE NomeProduto = 'Torneira Plástica';
+
 
 DELETE FROM Produtos
-WHERE IdProduto = 20
-
---## Revisão rápida
-
---**DDL — Data Definition Language** (define tabelas e estruturas)
-
---- `CREATE` → cria tabelas, bancos de dados, índices etc.
---- `ALTER` → modifica uma tabela ou estrutura já existente (ex.: adicionar uma coluna nova).
---- `DROP` → exclui uma tabela ou outro objeto do banco por completo (estrutura e dados juntos).
---- `TRUNCATE` → apaga todos os registros de uma tabela de uma vez, mas mantém a estrutura da tabela intacta.
+WHERE IdProduto = 20;
 
 
---**DML — Data Manipulation Language** (mexe nos dados que já existem)
+-- ## Revisão rápida
 
---- `INSERT` → insere novos registros na tabela.
---- `UPDATE` → modifica registros existentes.
---- `DELETE` → remove registros específicos de uma tabela (linha por linha, conforme o `WHERE`).
+-- DDL — Data Definition Language (define tabelas e estruturas)
 
---**DQL — Data Query Language** (só consulta, não altera nada)
-
---- `SELECT` → busca e filtra dados dentro do banco.
---> `DELETE` x `TRUNCATE` x `DROP`, qual a diferença? `DELETE` remove linhas específicas (e pode ter `WHERE`); `TRUNCATE` esvazia a tabela inteira de uma vez (sem `WHERE`), mas a tabela continua existindo; `DROP` apaga a tabela inteira, estrutura e tudo — ela deixa de existir no banco.
--->
+-- CREATE  → cria tabelas, bancos de dados, índices etc.
+-- ALTER   → modifica uma tabela ou estrutura já existente.
+-- DROP    → exclui uma tabela ou outro objeto do banco por completo.
+-- TRUNCATE → apaga todos os registros de uma tabela,
+--            mas mantém a estrutura da tabela intacta.
 
 
+-- DML — Data Manipulation Language (mexe nos dados que já existem)
 
--- EXERCICIO
+-- INSERT → insere novos registros na tabela.
+-- UPDATE → modifica registros existentes.
+-- DELETE → remove registros específicos de uma tabela.
+
+
+-- DQL — Data Query Language (só consulta, não altera nada)
+
+-- SELECT → busca e filtra dados dentro do banco.
+
+
+-- DELETE x TRUNCATE x DROP
+-- DELETE remove linhas específicas e pode ter WHERE.
+-- TRUNCATE esvazia a tabela inteira, mas mantém sua estrutura.
+-- DROP apaga a tabela inteira, incluindo sua estrutura.
+
+
+-- EXERCÍCIO
 
 CREATE TABLE Fornecedores (
 	IdFornecedor INT IDENTITY(1, 1) PRIMARY KEY,
@@ -95,6 +104,14 @@ CREATE TABLE Fornecedores (
 ALTER TABLE Produtos
 ADD IdFornecedor INT;
 
+
+-- Criação da chave estrangeira
+ALTER TABLE Produtos
+ADD CONSTRAINT FK_Produto_Fornecedor
+FOREIGN KEY (IdFornecedor)
+REFERENCES Fornecedores (IdFornecedor);
+
+
 INSERT INTO Fornecedores 
 (NomeFornecedor, CNPJ, Telefone, Cidade)
 VALUES
@@ -103,12 +120,13 @@ VALUES
 ('Phillips One', '02.0000003-01', '11981236664', 'São Paulo');
 
 
-SELECT * FROM Fornecedores
+SELECT * FROM Fornecedores;
 
 
 UPDATE Produtos
 SET IdFornecedor = 2
 WHERE NomeProduto = 'Martelo de Unha';
+
 
 SELECT * FROM Produtos;
 
@@ -118,8 +136,9 @@ WHERE Cidade = 'São Paulo';
 
 
 CREATE TABLE Rascunho (
-	Teste VARCHAR(50),
+	Teste VARCHAR(50)
 );
+
 
 INSERT INTO Rascunho
 (Teste)
@@ -128,6 +147,8 @@ VALUES
 ('qualquer coisa'),
 ('apenas um teste');
 
-SELECT * FROM Rascunho
 
-TRUNCATE TABLE Rascunho
+SELECT * FROM Rascunho;
+
+
+TRUNCATE TABLE Rascunho;
