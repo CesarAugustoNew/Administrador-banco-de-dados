@@ -78,7 +78,7 @@ INSERT INTO Cursos
 (Nome_Curso, Descricao, Id_Instrutor)
 VALUES
 	('Python Avançado', 'Técnicas sofísticadas de Python e arquiterura de código', 1 ),
-	('Desenvolvedor Full Stack', ' desenvolvimento completo de aplicações web construindo desde a interface visual até a lógica do servidor e bancos de dados', 1),
+	('Desenvolvedor Full Stack', ' desenvolvimento completo de aplicações web ', 1),
 	('Programação com IA', 'Aprenda as melhores técnicas de desenvolvimento com inteligencia artificial', 4),
 	('Programação em Nuvem AWS', 'Aprenda como otimizar suas aplicações utilizando AWS', 6),
 	('Teck Lead', 'Desenvolva Soft skills para ser teck lead', 5),
