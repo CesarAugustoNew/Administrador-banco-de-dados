@@ -76,13 +76,19 @@ ORDER BY QuantidadeEntregas DESC;
 -- Q8. Quantas unidades de cada produto foram vendidas e quanto cada um faturou? Ordene pelas unidades. O campeão em unidades é também o campeão em faturamento?
 
 SELECT
-    IdProduto,
-    SUM(Quantidade) AS UnidadeVendidas,
-    SUM(Quantidade * PrecoUnitario) AS Faturamento
-FROM dbo.ItensPedido
-GROUP BY IdProduto
-ORDER BY UnidadeVendidas DESC;
+    pr.NomeProduto,
+    SUM(ip.Quantidade) AS UnidadesVendidas,
+    SUM(ip.Quantidade * ip.PrecoUnitario) AS Faturamento
+FROM dbo.ItensPedido AS ip
+INNER JOIN dbo.Produtos AS pr
+    ON ip.IdProduto = pr.IdProduto
+INNER JOIN dbo.Pedidos AS p
+    ON ip.IdPedido = p.IdPedido
+WHERE p.Status = 'Entregue'
+GROUP BY pr.NomeProduto
+ORDER BY UnidadesVendidas DESC;;
 
+-- Resposta: não. O X-Bacon vendeu mais unidades (17), mas o Smash Duplo faturou mais (R$ 576).
 
 -- Q9. Qual o faturamento de produtos por categoria, da maior para a menor?
 
