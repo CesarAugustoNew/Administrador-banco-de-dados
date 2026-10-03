@@ -1,6 +1,6 @@
 [theme]
 primaryColor = "#E85D04"
-backgroudColor = "#FFFFFF"
+backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#FFF4EC"
 textColor = "#2B2118"
 font = "sans serif"
@@ -8,5 +8,5 @@ font = "sans serif"
 [client]
 toolbarMode = "minimal"
 
-[serve]
-runOnSava = true
+[server]
+runOnSave = true
