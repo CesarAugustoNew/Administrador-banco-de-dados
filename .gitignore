@@ -14,8 +14,8 @@ env/
 ENV/
 
 # ---------- Streamlit ----------
-# Senhas e chaves nunca vão para o GitHub (o config.toml continua versionado)
-.streamlit/secrets.toml
+# Arquivos com senhas e credenciais não devem ir para o GitHub
+**/.streamlit/secrets.toml
 
 # ---------- Variáveis de ambiente / credenciais ----------
 .env
@@ -40,6 +40,6 @@ ENV/
 Thumbs.db
 desktop.ini
 
-# ---------- Logs e temporários ----------
+# ---------- Logs e arquivos temporários ----------
 *.log
 *.tmp
