@@ -51,3 +51,32 @@ WHERE Custo IS NOT NULL AND DataSaida >= '2026-08-01' AND DataSaida < '2026-09-0
 
 -- Quais carros estão no pátio de locação ??
 -- combinações (union, union all, intersect, except)
+
+-- carros que estao na rua
+SELECT idVeiculo FROM Locacoes WHERE STATUS = 'Em Andamento'
+UNION
+SELECT idVeiculo FROM Manutencoes WHERE DataSaida IS NULL;
+-- carros que estao na manutencao
+
+SELECT  IdVeiculo FROM Veiculos
+EXCEPT
+(
+	SELECT idVeiculo FROM Locacoes WHERE STATUS = 'Em Andamento'
+	UNION
+	SELECT idVeiculo FROM Manutencoes WHERE DataSaida IS NULL
+);
+
+--quem alugou todo mês ?
+SELECT idCliente FROM Locacoes WHERE MONTH(DataRetirada) = 7
+INTERSECT
+SELECT idCliente FROM Locacoes WHERE MONTH(DataRetirada) = 8
+INTERSECT
+SELECT idCliente FROM Locacoes WHERE MONTH(DataRetirada) = 9
+INTERSECT
+SELECT idCliente FROM Locacoes WHERE MONTH(DataRetirada) = 10;
+
+
+
+
+
+
