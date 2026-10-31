@@ -52,31 +52,135 @@ WHERE Custo IS NOT NULL AND DataSaida >= '2026-08-01' AND DataSaida < '2026-09-0
 -- Quais carros estão no pátio de locação ??
 -- combinações (union, union all, intersect, except)
 
--- carros que estao na rua
-SELECT idVeiculo FROM Locacoes WHERE STATUS = 'Em Andamento'
-UNION
-SELECT idVeiculo FROM Manutencoes WHERE DataSaida IS NULL;
--- carros que estao na manutencao
+-- ????? -> carros que estão na rua
 
-SELECT  IdVeiculo FROM Veiculos
+
+SELECT idVeiculo FROM Locacoes WHERE STATUS = 'Em Andamento'
+UNION 
+SELECT idVeiculo FROM Manutencoes WHERE DataSaida IS NULL;
+-- carros que estão na manutenção
+
+SELECT IdVeiculo FROM Veiculos
 EXCEPT
 (
 	SELECT idVeiculo FROM Locacoes WHERE STATUS = 'Em Andamento'
-	UNION
+	UNION 
 	SELECT idVeiculo FROM Manutencoes WHERE DataSaida IS NULL
 );
 
---quem alugou todo mês ?
-SELECT idCliente FROM Locacoes WHERE MONTH(DataRetirada) = 7
-INTERSECT
-SELECT idCliente FROM Locacoes WHERE MONTH(DataRetirada) = 8
-INTERSECT
-SELECT idCliente FROM Locacoes WHERE MONTH(DataRetirada) = 9
-INTERSECT
-SELECT idCliente FROM Locacoes WHERE MONTH(DataRetirada) = 10;
+-- quem alugou todo mês ???
+SELECT C.IdCliente, 
+	Nome as NomeCliente 
+	FROM Locacoes L 
+	JOIN Clientes C on  L.IdCliente = C.IdCliente 
+	where MONTH(DataRetirada) = 7
+INTERSECT 
+SELECT C.IdCliente, 
+	Nome as NomeCliente 
+	FROM Locacoes L 
+	JOIN Clientes C on  L.IdCliente = C.IdCliente 
+	where MONTH(DataRetirada) = 8
+INTERSECT 
+SELECT C.IdCliente, 
+	Nome as NomeCliente 
+	FROM Locacoes L 
+	JOIN Clientes C on  L.IdCliente = C.IdCliente 
+	where MONTH(DataRetirada) = 9
+INTERSECT 
+SELECT C.IdCliente, 
+	TRIM(Nome) as NomeCliente 
+	FROM Locacoes L 
+	JOIN Clientes C on  L.IdCliente = C.IdCliente 
+	where MONTH(DataRetirada) = 10
+	order by NomeCliente asc;
+
+
+-- primeira maneira -> tabela temporaria
+DROP TABLE IF EXISTS #Frota
+SELECT IdVeiculo,
+		Count(*) as Locacoes,
+		Sum(DATEDIFF(Day, DataRetirada, DataDevolucao)) AS diasNaRua
+INTO  #Frota
+FROM Locacoes
+group by IdVeiculo;
+
+Select * from #Frota;
+
+INSERT INTO Veiculos(AnoFabricacao, Cor, IdCategoria,Marca, Modelo, Placa, Quilometragem, Status)
+VALUES 
+(2021, 'branco', 2, 'FIAT', 'Punto', 'GGG9999', 1455, 'Disponível');
+
+select * from Veiculos;
+
+
+
+DROP TABLE IF EXISTS #Atrasadas;
+
+CREATE TABLE #Atrasadas
+	(IdLocacao INT, IdCliente INT, DiasAtraso INT)
+
+INSERT INTO #Atrasadas
+SELECT	
+	IdLocacao,
+	IdCliente,
+	DATEDIFF(day, DataPrevistaDevolucao, DataDevolucao)
+FROM
+	Locacoes
+Where DataDevolucao > DataPrevistaDevolucao;
+
+
+SELECT * FROM #Atrasadas;
 
 
 
 
+DROP TABLE IF EXISTS #infoClientesDaCasa;
+
+CREATE TABLE #infoClientesDaCasa
+	(IdCliente INT, Nome VARCHAR(50))
+
+INSERT INTO #infoClientesDaCasa
+SELECT C.IdCliente, 
+	Nome as NomeCliente 
+	FROM Locacoes L 
+	JOIN Clientes C on  L.IdCliente = C.IdCliente 
+	WHERE MONTH(DataRetirada) = 7
+INTERSECT 
+SELECT C.IdCliente, 
+	Nome as NomeCliente 
+	FROM Locacoes L 
+	JOIN Clientes C on  L.IdCliente = C.IdCliente 
+	WHERE MONTH(DataRetirada) = 8
+INTERSECT 
+SELECT C.IdCliente, 
+	Nome as NomeCliente 
+	FROM Locacoes L 
+	JOIN Clientes C on  L.IdCliente = C.IdCliente 
+	where MONTH(DataRetirada) = 9
+INTERSECT 
+SELECT C.IdCliente, 
+	TRIM(Nome) as NomeCliente 
+	FROM Locacoes L 
+	JOIN Clientes C on  L.IdCliente = C.IdCliente 
+	WHERE MONTH(DataRetirada) = 10
+	ORDER BY NomeCliente ASC;
+
+SELECT * FROM #infoClientesDaCasa;
 
 
+DROP TABLE IF EXISTS #ClientesTodoMes;
+
+SELECT 
+	C.IdCliente,
+	TRIM(C.Nome) as NomeCliente
+INTO #ClientesTodoMes
+FROM Locacoes L
+JOIN Clientes C ON L.IdCliente = C.IdCliente
+WHERE 
+	L.DataRetirada >= '2026-07-01'
+	AND L.DataRetirada < '2026-11-01'
+GROUP BY C.IdCliente, C.Nome
+HAVING COUNT(DISTINCT MONTH(L.DataRetirada)) = 4
+
+
+SELECT * FROM #ClientesTodoMes
